@@ -1,7 +1,7 @@
 include ../../makefile.conf
 
 ifeq ($(BUILDTYPE), STANDALONE)
-	DIRS = common midi mouse display datafile pfbus
+	DIRS = common midi mouse display datafile pfbus helmholtz
 else
 	DIRS = maxmsp pfbus
 endif

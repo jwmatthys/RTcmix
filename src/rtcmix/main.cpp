@@ -62,6 +62,8 @@ detect_denormals()
 #endif /* DENORMAL_CHECK */
 #endif /* LINUX */
 
+// JWM: This is totally sketchy. Don't hate.
+double hh_pitch=0;
 
 #ifndef EMBEDDED
 /* ----------------------------------------------------------------- main --- */
