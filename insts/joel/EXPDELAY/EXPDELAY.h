@@ -1,4 +1,11 @@
 #include <Instrument.h>      // the base class for this instrument
+#include <math.h> // for pow()
+
+#define DEFAULT_CURVE      1
+#define DEFAULT_NUMPTS    20
+#define DEFAULT_BUFLEN 88200
+#define MIN_BUFLEN   100
+#define CLIP(a, lo, hi) ( (a)>(lo)?( (a)<(hi)?(a):(hi) ):(lo) )
 
 class EXPDELAY : public Instrument {
 
@@ -10,6 +17,12 @@ public:
 	virtual int run();
 
 private:
+	double experp (double inval, double inlo, double inhi, double curve, double outlo, double outhi)
+	{
+		double lerp = (inval - inlo) / (inhi - inlo);
+		double expval = pow (lerp, curve);
+		return expval * (outhi - outlo) + outlo;
+	}
 	void doupdate();
 	float *_delay_buf;
 	float *_in;

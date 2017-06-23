@@ -41,6 +41,7 @@ EXPDELAY::EXPDELAY()
 EXPDELAY::~EXPDELAY()
 {
 	delete [] _in;
+	delete [] _delay_buf;
 }
 
 
@@ -69,10 +70,10 @@ int EXPDELAY::init(double p[], int n_args)
 	const int inchan = 0;//p[3];
 	const float pan = 0.5;//p[4];
 	const float max_delay_time = 10;//p[5];
-	const int reps = 20;//p[6];
+	const int reps = DEFAULT_NUMPTS;//p[6];
 	const float delay_time = 10;//p[7];
-	const float ampcurve = 1;//p[8];
-	const float decaycurve = 1;//p[9];
+	const float ampcurve = DEFAULT_CURVE;//p[8];
+	const float decaycurve = DEFAULT_CURVE;//p[9];
 
 	switch (n_args)
 	{
@@ -146,12 +147,12 @@ int EXPDELAY::configure()
 {
 	// RTBUFSAMPS is the maximum number of sample frames processed for each
 	// call to run() below.
+	_buffer_pos = 0;
 
 	_in = new float [RTBUFSAMPS * inputChannels()];
 
 	return _in ? 0 : -1;	// IMPORTANT: Return 0 on success, and -1 on failure.
 }
-
 
 // Called at the control rate to update parameters like amplitude, pan, etc.
 
@@ -162,13 +163,13 @@ void EXPDELAY::doupdate()
 	// updated to certain pfields.  For more about this, read
 	// src/rtcmix/Instrument.h.
 
-	double p[6];
-	update(p, 6);
-
-	_amp = p[3];
+	double p[10];
+	update(p, 10);
+	_amp = p[2];
+	_pan = (_nargs > 4) ? p[4] : 0.5;           // default is .5
 
 	// Here's how to handle an optional pfield.
-	_pan = (_nargs > 5) ? p[5] : 0.5;           // default is .5
+
 }
 
 
